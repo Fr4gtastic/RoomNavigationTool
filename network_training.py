@@ -1,6 +1,7 @@
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import model_from_json
 from pathlib import Path
+import plot_training
 
 train_data_dir = r'data/train'
 validation_data_dir = r'data/validation'
@@ -25,8 +26,12 @@ model.compile(loss='categorical_crossentropy',
               metrics=['accuracy'])
 
 train_data_generator = ImageDataGenerator(
+    featurewise_center=True,
+    featurewise_std_normalization=True,
     rescale=1. / 255,
-    shear_range=0.2,
+    zca_whitening=True,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True)
 
@@ -36,15 +41,17 @@ train_generator = train_data_generator.flow_from_directory(
     train_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='categorical')
+    class_mode='categorical',
+    save_to_dir=r'data/processed/train')
 
 validation_generator = test_data_generator.flow_from_directory(
     validation_data_dir,
     target_size=(img_width, img_height),
     batch_size=batch_size,
-    class_mode='categorical')
+    class_mode='categorical',
+    save_to_dir=r'data/processed/validation')
 
-model.fit_generator(
+history = model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
@@ -52,3 +59,6 @@ model.fit_generator(
     validation_steps=nb_validation_samples // batch_size)
 
 model.save_weights(weights_filename)
+
+plot_training.plot_accuracy(history)
+plot_training.plot_loss(history)
