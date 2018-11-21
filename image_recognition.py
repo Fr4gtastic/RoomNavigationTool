@@ -1,5 +1,7 @@
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
+from keras.optimizers import Adam
+from keras.utils import plot_model
 
 img_width = 150
 img_height = 150
@@ -19,10 +21,17 @@ model.add(Dense(64, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(3, activation='softmax'))
 
+optimizer = Adam(
+    beta_1=0.9,
+    beta_2=0.999,
+    epsilon=1e-8)
+
 model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
+              optimizer=optimizer,
               metrics=['accuracy'])
 
 model_json = model.to_json()
 with open(filename, 'w+') as json_file:
     json_file.write(model_json)
+
+# plot_model(model, to_file='visualization/model.png')
