@@ -10,7 +10,7 @@ def plot_accuracy(history):
     pyplot.xlabel('Epoch')
     pyplot.legend(['Train', 'Test'], loc='upper left')
     pyplot.show()
-    pyplot.savefig('accuracy.png')
+    pyplot.savefig('visualization/accuracy.png')
 
 
 def plot_loss(history):
@@ -21,4 +21,4 @@ def plot_loss(history):
     pyplot.xlabel('Epoch')
     pyplot.legend(['Train', 'Test'], loc='upper left')
     pyplot.show()
-    pyplot.savefig('loss.png')
+    pyplot.savefig('visualization/loss.png')
