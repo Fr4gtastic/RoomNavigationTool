@@ -1,3 +1,4 @@
+from keras.callbacks import ReduceLROnPlateau
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import model_from_json
 from pathlib import Path
@@ -51,12 +52,16 @@ validation_generator = test_data_generator.flow_from_directory(
     class_mode='categorical',
     save_to_dir=r'data/processed/validation')
 
+reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2,
+                              patience=5, min_lr=0.001)
+
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size)
+    validation_steps=nb_validation_samples // batch_size,
+    callbacks=[reduce_lr])
 
 model.save_weights(weights_filename)
 
