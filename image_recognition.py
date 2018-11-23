@@ -1,11 +1,10 @@
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dropout, Flatten, Dense
 from keras.optimizers import Adam
-from keras.utils import plot_model
 
 img_width = 150
 img_height = 150
-filename = 'model.json'
+filename = 'model.h5'
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(img_width, img_height, 3)))
@@ -30,8 +29,4 @@ model.compile(loss='categorical_crossentropy',
               optimizer=optimizer,
               metrics=['accuracy'])
 
-model_json = model.to_json()
-with open(filename, 'w+') as json_file:
-    json_file.write(model_json)
-
-# plot_model(model, to_file='visualization/model.png')
+model.save(filename)

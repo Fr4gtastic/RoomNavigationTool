@@ -1,7 +1,7 @@
 from keras.callbacks import ReduceLROnPlateau
+from keras.callbacks import TensorBoard
 from keras.preprocessing.image import ImageDataGenerator
-from keras.models import model_from_json
-from pathlib import Path
+from keras.models import load_model
 import plot_training
 
 train_data_dir = r'data/train'
@@ -12,25 +12,12 @@ epochs = 50
 batch_size = 16
 img_width = 150
 img_height = 150
-model_filename = 'model.json'
-weights_filename = 'weights.h5'
+model_filename = 'model.h5'
 
-with open('model.json', 'r') as json_file:
-    loaded_model_json = json_file.read()
-    model = model_from_json(loaded_model_json)
-
-if Path(weights_filename).exists():
-    model.load_weights(weights_filename)
-
-model.compile(loss='categorical_crossentropy',
-              optimizer='rmsprop',
-              metrics=['accuracy'])
+model = load_model(model_filename)
 
 train_data_generator = ImageDataGenerator(
-    featurewise_center=True,
-    featurewise_std_normalization=True,
     rescale=1. / 255,
-    zca_whitening=True,
     width_shift_range=0.2,
     height_shift_range=0.2,
     zoom_range=0.2,
@@ -55,15 +42,26 @@ validation_generator = test_data_generator.flow_from_directory(
 reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2,
                               patience=5, min_lr=0.001)
 
+tensor_board = TensorBoard(log_dir='./logs',
+           #                histogram_freq=5,       problem with this line and fit_generator
+                           batch_size=32,
+                           write_graph=True,
+                           write_grads=True,
+                           write_images=True,
+                           update_freq='epoch')
+
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples // batch_size,
-    callbacks=[reduce_lr])
+    callbacks=[reduce_lr, tensor_board])
 
-model.save_weights(weights_filename)
+model.save(model_filename)
 
 plot_training.plot_accuracy(history)
 plot_training.plot_loss(history)
+
+# python -m tensorboard.main --logdir ./logs
+# http://localhost:6006
