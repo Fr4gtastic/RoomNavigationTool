@@ -1,5 +1,6 @@
 from keras.callbacks import ReduceLROnPlateau
 from keras.callbacks import TensorBoard
+from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import load_model
 import plot_training
@@ -50,13 +51,15 @@ tensor_board = TensorBoard(log_dir='./logs',
                            write_images=True,
                            update_freq='epoch')
 
+model_checkpoint = ModelCheckpoint(filepath=model_filename)
+
 history = model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
     validation_steps=nb_validation_samples // batch_size,
-    callbacks=[reduce_lr, tensor_board])
+    callbacks=[reduce_lr, tensor_board, model_checkpoint])
 
 model.save(model_filename)
 
