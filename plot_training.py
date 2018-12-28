@@ -1,4 +1,5 @@
 import matplotlib.pyplot as pyplot
+import numpy
 
 
 def plot_accuracy(history):
@@ -9,8 +10,8 @@ def plot_accuracy(history):
     pyplot.ylabel('Accuracy')
     pyplot.xlabel('Epoch')
     pyplot.legend(['Train', 'Test'], loc='upper left')
-    pyplot.show()
     pyplot.savefig('visualization/accuracy.png')
+    pyplot.show()
 
 
 def plot_loss(history):
@@ -20,5 +21,15 @@ def plot_loss(history):
     pyplot.ylabel('Loss')
     pyplot.xlabel('Epoch')
     pyplot.legend(['Train', 'Test'], loc='upper left')
-    pyplot.show()
     pyplot.savefig('visualization/loss.png')
+    pyplot.show()
+
+
+def plot_conf_matrix(matrix):
+    fig, ax = pyplot.subplots()
+    ax.matshow(matrix, cmap='binary')
+    for (i, j), z in numpy.ndenumerate(matrix):
+        ax.text(j, i, '{:0.1f}'.format(z), ha='center', va='center',
+                bbox=dict(boxstyle='round', facecolor='white', edgecolor='0.3'))
+    pyplot.savefig('visualization/confusion_matrix.png')
+    pyplot.show()
