@@ -3,20 +3,23 @@ from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from keras.callbacks import EarlyStopping
 from keras.callbacks import LearningRateScheduler
-from keras.preprocessing.image import ImageDataGenerator
 from keras.models import load_model
+from keras.preprocessing.image import ImageDataGenerator
 import plot_training
+import numpy as np
 from step_decay import step_decay
+from sklearn.metrics import confusion_matrix, classification_report
+from samples_counter import count_samples
 
 train_data_dir = r'data/train'
 validation_data_dir = r'data/validation'
 tensor_board_dir = r'./logs'
-nb_train_samples = 1000
-nb_validation_samples = 800
-epochs = 500
+nb_train_samples = count_samples(train_data_dir)
+nb_validation_samples = count_samples(validation_data_dir)
+epochs = 100
 batch_size = 16
-img_width = 150
-img_height = 150
+img_width = 32
+img_height = 32
 model_filename = 'model.h5'
 
 model = load_model(model_filename)
