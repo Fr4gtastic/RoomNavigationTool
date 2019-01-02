@@ -1,6 +1,6 @@
 import cv2
+import numpy as np
 from keras.models import load_model
-from convert_image import convert_image
 
 model_filename = 'model.h5'
 
@@ -14,10 +14,14 @@ if __name__ == '__main__':
         ret, frame = cap.read()
         if ret:
             font = cv2.FONT_HERSHEY_SIMPLEX
-            prediction = model.predict_classes(convert_image(frame))[0]
+
+            transformed_frame = np.resize(frame, (32, 32, 3))
+            transformed_frame = np.expand_dims(transformed_frame, axis=0)
+            prediction = model.predict_classes(transformed_frame)[0]
+
             if prediction == 1:
                 cv2.putText(frame, 'Door', (10, 450), font, 3, (0, 255, 0), 2, cv2.LINE_AA)
-            else:
+            elif prediction == 2:
                 cv2.putText(frame, 'Window', (10, 450), font, 3, (0, 255, 0), 2, cv2.LINE_AA)
             cv2.imshow('Frame', frame)
 
