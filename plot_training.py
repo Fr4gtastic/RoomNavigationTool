@@ -29,7 +29,7 @@ def plot_conf_matrix(matrix, total):
     fig, ax = pyplot.subplots()
     ax.matshow(matrix, cmap='binary')
     for (i, j), z in numpy.ndenumerate(matrix):
-        ax.text(j, i, '{:0.1f}'.format(z/total), ha='center', va='center',
+        ax.text(j, i, '{:.1%}'.format(z/total), ha='center', va='center',
                 bbox=dict(boxstyle='round', facecolor='white', edgecolor='0.3'))
     pyplot.savefig('visualization/confusion_matrix.png')
     pyplot.show()
