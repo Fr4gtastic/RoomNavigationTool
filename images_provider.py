@@ -32,7 +32,8 @@ def fetch_image_set(query, dir_name, page=1, count=500, sort='relevance'):
 
 if __name__ == '__main__':
     page = 0
-    for _ in range(5):
+    for _ in range(10):
         page += 1
-        fetch_image_set('window', dir_name=r'data\train\window', page=page)
-        fetch_image_set('door', dir_name=r'data\train\door', page=page)
+        fetch_image_set('room window', dir_name=r'data4\train\window', page=page)
+        fetch_image_set('room door', dir_name=r'data4\train\door', page=page)
+        fetch_image_set('room', dir_name=r'data4\train\anything_else', page=page)
